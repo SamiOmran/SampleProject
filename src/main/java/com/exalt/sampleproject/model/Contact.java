@@ -23,7 +23,7 @@ public class Contact {
     @Column @JsonProperty @NonNull
     private String phone;
 
-    @ManyToOne @NonNull
-    private Restaurants restaurants;
+    @OneToOne @NonNull
+    private Restaurants restaurant;
 
 }

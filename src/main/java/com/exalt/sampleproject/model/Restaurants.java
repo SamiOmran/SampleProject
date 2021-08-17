@@ -19,19 +19,16 @@ public class Restaurants {
     @Column(nullable = false) @JsonProperty @NonNull
     private String name;
 
-    @JsonProperty
     @OneToMany(mappedBy = "restaurants")
     private List<Location> locations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurants")
-    private List<Contact> contacts = new ArrayList<>();
+    @OneToOne
+    @JoinColumn(name = "contact_id", referencedColumnName = "id")
+    private Contact contact;
 
     public void addLocation(Location location) {
         this.locations.add(location);
     }
 
-    public void addContact(Contact contact) {
-        this.contacts.add(contact);
-    }
 
 }

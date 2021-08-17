@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public abstract class Auditable {
 
     @CreatedBy
-    private String createdBy;
+    private final static String createdBy = "Sami";
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -28,10 +28,6 @@ public abstract class Auditable {
 
     public String getCreatedBy() {
         return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
     }
 
     public LocalDateTime getCreatedDate() {
