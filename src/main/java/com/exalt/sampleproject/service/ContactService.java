@@ -13,6 +13,7 @@ import java.util.Optional;
 @Service
 public class ContactService {
     private final ContactRepo contactRepo;
+    private final ResponseMessage responseMessage = new ResponseMessage();
 
     public ContactService(ContactRepo contactRepo) {
         this.contactRepo = contactRepo;
@@ -21,7 +22,6 @@ public class ContactService {
     public ResponseMessage save(Contact contact) {
         contactRepo.save(contact);
 
-        ResponseMessage responseMessage = new ResponseMessage();
         responseMessage.setMessage("Successfully saved");
         responseMessage.setStatus(1);
 
@@ -29,10 +29,9 @@ public class ContactService {
     }
 
     public ResponseMessage createContact(Contact contact, Optional<Restaurants> optionalRestaurant) {
-        ResponseMessage responseMessage = new ResponseMessage();
         if (optionalRestaurant.isPresent()) {
             optionalRestaurant.map(restaurant -> {
-            contact.setRestaurant(restaurant);
+            //contact.setRestaurant(restaurant);
             return save(contact);});
             responseMessage.setMessage("Successfully created");
             responseMessage.setStatus(1);
@@ -45,10 +44,9 @@ public class ContactService {
     }
 
     public ResponseMessage updateContactByRestuarant(Optional<Restaurants> optionalRestaurant, Contact contact) {
-        ResponseMessage responseMessage = new ResponseMessage();
         if (optionalRestaurant.isPresent()) {
             optionalRestaurant.map(restaurant -> {
-                contact.setRestaurant(restaurant);
+                //contact.setRestaurant(restaurant);
                 return save(contact);});
             responseMessage.setMessage("Successfully updated");
             responseMessage.setStatus(1);
@@ -61,8 +59,6 @@ public class ContactService {
     }
 
     public ResponseMessage deleteContactByRestaurant(Optional<Restaurants> optionalRestaurant) {
-        ResponseMessage responseMessage = new ResponseMessage();
-
         if (optionalRestaurant.isPresent()) {
             contactRepo.delete(optionalRestaurant.get().getContact());
             responseMessage.setMessage("Successfully deleted");

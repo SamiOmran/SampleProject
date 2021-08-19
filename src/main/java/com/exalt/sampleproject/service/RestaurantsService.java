@@ -13,15 +13,14 @@ import java.util.Optional;
 @Service
 public class RestaurantsService {
     private final RestaurantsRepo restaurantsRepo;
-
-
     private final static Logger logger = LoggerFactory.getLogger(RestaurantsService.class);
+    private final ResponseMessage responseMessage = new ResponseMessage();
 
     public RestaurantsService(RestaurantsRepo restaurantsRepo) {
         this.restaurantsRepo = restaurantsRepo;
     }
 
-//
+
 //    public void createRecord() {
 //        Restaurants res = new Restaurants("KAN YA MAKAN");
 //        Restaurants res2 = new Restaurants("ward");
@@ -37,10 +36,9 @@ public class RestaurantsService {
 //        save(res2);
 //    }
 
-    public ResponseMessage save(Restaurants restaurants) {
-        restaurantsRepo.save(restaurants);
+    public ResponseMessage save(Restaurants restaurant) {
+        restaurantsRepo.save(restaurant);
 
-        ResponseMessage responseMessage = new ResponseMessage();
         responseMessage.setMessage("Successfully saved");
         responseMessage.setStatus(1);
 
@@ -56,7 +54,6 @@ public class RestaurantsService {
     }
 
     public ResponseMessage updateRestaurant(Long id, Restaurants updatedRestaurant) {
-        ResponseMessage responseMessage = new ResponseMessage();
         Optional<Restaurants> optionalRestaurants = findById(id);
 
         if (optionalRestaurants.isPresent()) {
@@ -77,8 +74,6 @@ public class RestaurantsService {
     }
 
     public ResponseMessage deleteRestaurant(Long id) {
-        ResponseMessage responseMessage = new ResponseMessage();
-
         if (findById(id).isPresent()) {
             restaurantsRepo.delete(findById(id).get());
             responseMessage.setMessage("Successfully deleted");
