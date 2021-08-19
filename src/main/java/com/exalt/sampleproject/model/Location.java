@@ -26,5 +26,6 @@ public class Location {
     private String section;
 
     @ManyToOne @NonNull
-    private Restaurants restaurants;
+    @JoinColumn(name = "restaurant_id")
+    private Restaurants restaurant;
 }
