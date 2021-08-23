@@ -1,14 +1,13 @@
 package com.exalt.sampleproject.controller;
 
 import com.exalt.sampleproject.dto.ResponseMessage;
+import com.exalt.sampleproject.exception.ResourceNotFoundException;
 import com.exalt.sampleproject.model.Orders;
 import com.exalt.sampleproject.service.OrdersService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class OrdersController {
@@ -20,14 +19,32 @@ public class OrdersController {
 
     @GetMapping(path = "/restaurants/orders")
     public List<Orders> getAllOrders() {
-        Orders orders = new Orders(5,"sami");
-        ordersService.save(orders);
         return ordersService.findAll();
     }
 
-    @PostMapping(path = "/restaurants/orders")
-    public ResponseMessage createOrder(@RequestBody Orders newOrders) {
+    @GetMapping(path = "/restaurants/orders/{orderId}")
+    public Orders getOrder(@PathVariable Long orderId) {
+        Optional<Orders> optionalOrders = ordersService.findById(orderId);
 
-        return ordersService.createOrder(newOrders);
+        if (optionalOrders.isPresent()) {
+            return optionalOrders.get();
+        } else {
+            throw new ResourceNotFoundException("Order you asked not found");
+        }
+    }
+
+    @PostMapping(path = "/restaurants/orders/{itemId}")
+    public ResponseMessage createOrder(@RequestBody Orders newOrders, @PathVariable Long itemId) {
+        return ordersService.createOrder(newOrders, itemId);
+    }
+
+    @PutMapping(path = "/restaurants/orders/{orderId}")
+    public ResponseMessage updateOrder(@RequestBody Orders order, @PathVariable Long orderId) {
+        return ordersService.updateOrder(order, orderId);
+    }
+
+    @DeleteMapping("/restaurants/orders/{orderId}")
+    public ResponseMessage deleteOrder(@PathVariable Long orderId) {
+        return ordersService.deleteOrder(orderId);
     }
 }
