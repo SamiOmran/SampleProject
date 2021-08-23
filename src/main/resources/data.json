@@ -1,0 +1,33 @@
+[
+  {
+    "name":"كان يا مكان",
+    "locations":[
+      {
+        "city":"Nablus",
+        "street":"Rafedia",
+        "section":"A"
+      }
+    ],
+    "contact":{
+      "telephone":"092323",
+      "phone":"05999"
+    }
+  },
+
+  {
+    "name":"ألف ليلة وليلة",
+    "locations":[
+      {
+        "city":"Rammallah",
+        "street":"Main street",
+        "section":"A"
+      }
+    ],
+    "contact":{
+      "telephone":"0922",
+      "phone":"05699"
+    }
+  }
+]
+
+
