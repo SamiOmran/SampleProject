@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Setter
@@ -24,11 +23,10 @@ public class Items {
     @NonNull @JsonProperty
     private int price;
 
+    @Lob private Byte[] image;
+
     @ManyToOne @JoinColumn(name = "restaurant_id")
     @NonNull @JsonProperty
     private Restaurants restaurants;
-
-    @ManyToMany(mappedBy = "items")
-    private Set<Orders> orders;
 
 }
