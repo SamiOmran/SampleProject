@@ -4,8 +4,11 @@ import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.Items;
 import com.exalt.sampleproject.model.Restaurants;
 import com.exalt.sampleproject.repository.ItemsRepo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -21,6 +24,10 @@ public class ItemsService {
         this.restaurantsService = restaurantsService;
     }
 
+    public List<Items> findAll() {
+        return itemsRepo.findAll();
+    }
+
     public Optional<Items> findById(Long itemId) {
         return itemsRepo.findById(itemId);
     }
@@ -33,12 +40,28 @@ public class ItemsService {
         return responseMessage;
     }
 
-    public ResponseMessage createItem(Items newItem, Long restaurantId) {
+    public ResponseMessage createItem(String newItem, Long restaurantId, MultipartFile multipartFile) throws IOException {
         Optional<Restaurants> optionalRestaurants = restaurantsService.findById(restaurantId);
 
         if (optionalRestaurants.isPresent()) {
-            newItem.setRestaurants(optionalRestaurants.get());
-            return save(newItem);
+            Items item = new Items();
+
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                item = objectMapper.readValue(newItem, Items.class);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            item.setRestaurants(optionalRestaurants.get());
+
+            Byte[] byteObjects = new Byte[multipartFile.getBytes().length];
+            int i = 0;
+
+            for (byte b: multipartFile.getBytes()) {
+                byteObjects[i++] = b;
+            }
+            item.setImage(byteObjects);
+            return save(item);
         } else {
             responseMessage.setMessage("Couldn't save new item");
             responseMessage.setStatus(-1);
@@ -90,4 +113,5 @@ public class ItemsService {
         }
         return responseMessage;
     }
+
 }
