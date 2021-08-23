@@ -13,28 +13,12 @@ import java.util.Optional;
 @Service
 public class RestaurantsService {
     private final RestaurantsRepo restaurantsRepo;
-    private final static Logger logger = LoggerFactory.getLogger(RestaurantsService.class);
+    //private final static Logger logger = LoggerFactory.getLogger(RestaurantsService.class);
     private final ResponseMessage responseMessage = new ResponseMessage();
 
     public RestaurantsService(RestaurantsRepo restaurantsRepo) {
         this.restaurantsRepo = restaurantsRepo;
     }
-
-
-//    public void createRecord() {
-//        Restaurants res = new Restaurants("KAN YA MAKAN");
-//        Restaurants res2 = new Restaurants("ward");
-//
-//        Location location = new Location("nablus", "rafidya", "akadimya", res);
-//        Contact contact = new Contact("092345125", "0597430457", res);
-//
-//        res.setContact(contact);
-//        res.addLocation(location);
-//
-//       // logger.info("location: " + res.getLocation().getCity() + " " + res.getLocation().getSection());
-//        save(res);
-//        save(res2);
-//    }
 
     public ResponseMessage save(Restaurants restaurant) {
         restaurantsRepo.save(restaurant);
@@ -45,12 +29,12 @@ public class RestaurantsService {
         return responseMessage;
     }
 
-    public List<Restaurants> findAll() {
-        return restaurantsRepo.findAll();
-    }
-
     public Optional<Restaurants> findById(Long id) {
         return restaurantsRepo.findById(id);
+    }
+
+    public List<Restaurants> findAll() {
+        return restaurantsRepo.findAll();
     }
 
     public ResponseMessage updateRestaurant(Long id, Restaurants updatedRestaurant) {
@@ -59,8 +43,6 @@ public class RestaurantsService {
         if (optionalRestaurants.isPresent()) {
             optionalRestaurants.map(restaurant -> {
                 restaurant.setName(updatedRestaurant.getName());
-                restaurant.setContact(updatedRestaurant.getContact());
-                restaurant.setLocations(updatedRestaurant.getLocations());
                 save(restaurant);
                 return restaurant;
             });
@@ -85,4 +67,5 @@ public class RestaurantsService {
 
         return responseMessage;
     }
+
 }

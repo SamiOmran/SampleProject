@@ -1,8 +1,8 @@
 package com.exalt.sampleproject.controller;
 
 import com.exalt.sampleproject.dto.ResponseMessage;
-import com.exalt.sampleproject.model.Contact;
-import com.exalt.sampleproject.model.Location;
+import com.exalt.sampleproject.model.AllData;
+import com.exalt.sampleproject.model.Locations;
 import com.exalt.sampleproject.model.Restaurants;
 import com.exalt.sampleproject.service.ContactService;
 import com.exalt.sampleproject.service.LocationService;
@@ -18,13 +18,11 @@ import java.util.Optional;
 public class RestaurantsController {
     private final RestaurantsService restaurantsService;
     private final LocationService locationService;
-    private final ContactService contactService;
     private final static Logger logger = LoggerFactory.getLogger(RestaurantsController.class);
 
     public RestaurantsController(RestaurantsService restaurantsService, LocationService locationService, ContactService contactService) {
         this.restaurantsService = restaurantsService;
         this.locationService = locationService;
-        this.contactService = contactService;
     }
 
     /**
@@ -42,31 +40,28 @@ public class RestaurantsController {
     @GetMapping(path = "/restaurants/{id}", produces = {"application/json"})
     public Restaurants getRestaurant(@PathVariable Long id) {
         Optional<Restaurants> optionalRestaurants =  restaurantsService.findById(id);
-
         return (optionalRestaurants.isPresent()) ? optionalRestaurants.get() : null;
     }
 
     /**
-     * @param restaurant new restaurant to be added
-     * @return the new restaurant created
+     * @param allData new restaurant to be added
+     * @return response status
      */
     @PostMapping(path = "/restaurants", produces = {"application/json"})
-    public ResponseMessage createRestaurant(@RequestBody Restaurants restaurant) {
-        List<Location> locations = restaurant.getLocations();
-        locations.forEach(locationService::save);
-
-        Contact contact = restaurant.getContact();
-
+    public ResponseMessage createRestaurant(/*@RequestBody Restaurants restaurant,*/ @RequestBody AllData allData) {
+        Restaurants restaurant = new Restaurants();
+        restaurant.setName(allData.getName());
         restaurantsService.save(restaurant);
-        restaurant.setLocations(locations);
-        restaurant.setContact(contact);
 
-        logger.info("Successfully created restaurant" + restaurant.getName());
+        List<Locations> locations = allData.getLocations();
+        Optional<Restaurants> optionalRestaurants = Optional.of(restaurant);
+        locationService.createLocation(locations, optionalRestaurants);
+
+        logger.info("Successfully created restaurant: " + restaurant.getName());
         return restaurantsService.save(restaurant);
     }
 
     /**
-     *
      * @param id of old restaurant
      * @param updatedRestaurant restaurant with updated values
      * @return updatedRestaurant
@@ -77,7 +72,6 @@ public class RestaurantsController {
     }
 
     /**
-     *
      * @param id of restaurant to be deleted
      * @return message
      */
