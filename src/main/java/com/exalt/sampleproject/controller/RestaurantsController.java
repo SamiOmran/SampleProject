@@ -4,8 +4,8 @@ import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.AllData;
 import com.exalt.sampleproject.model.Locations;
 import com.exalt.sampleproject.model.Restaurants;
-import com.exalt.sampleproject.service.ContactService;
-import com.exalt.sampleproject.service.LocationService;
+import com.exalt.sampleproject.service.ContactsService;
+import com.exalt.sampleproject.service.LocationsService;
 import com.exalt.sampleproject.service.RestaurantsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +17,12 @@ import java.util.Optional;
 @RestController
 public class RestaurantsController {
     private final RestaurantsService restaurantsService;
-    private final LocationService locationService;
+    private final LocationsService locationsService;
     private final static Logger logger = LoggerFactory.getLogger(RestaurantsController.class);
 
-    public RestaurantsController(RestaurantsService restaurantsService, LocationService locationService, ContactService contactService) {
+    public RestaurantsController(RestaurantsService restaurantsService, LocationsService locationsService, ContactsService contactsService) {
         this.restaurantsService = restaurantsService;
-        this.locationService = locationService;
+        this.locationsService = locationsService;
     }
 
     /**
@@ -55,7 +55,7 @@ public class RestaurantsController {
 
         List<Locations> locations = allData.getLocations();
         Optional<Restaurants> optionalRestaurants = Optional.of(restaurant);
-        locationService.createLocation(locations, optionalRestaurants);
+        locationsService.createLocation(locations, optionalRestaurants);
 
         logger.info("Successfully created restaurant: " + restaurant.getName());
         return restaurantsService.save(restaurant);

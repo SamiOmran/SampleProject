@@ -5,12 +5,13 @@ import lombok.*;
 
 import javax.persistence.*;
 
+
 @Entity
 @Setter
 @Getter
 @RequiredArgsConstructor
 @NoArgsConstructor
-public class Location {
+public class Locations {
     @Id
     @GeneratedValue
     @JsonProperty
@@ -28,4 +29,5 @@ public class Location {
     @ManyToOne @NonNull
     @JoinColumn(name = "restaurant_id")
     private Restaurants restaurant;
+
 }
