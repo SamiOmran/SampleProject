@@ -24,6 +24,14 @@ public class ItemsService {
         this.restaurantsService = restaurantsService;
     }
 
+    public ResponseMessage save(Items item) {
+        itemsRepo.save(item);
+        responseMessage.setMessage("Success item saved");
+        responseMessage.setStatus(1);
+
+        return responseMessage;
+    }
+
     public List<Items> findAll() {
         return itemsRepo.findAll();
     }
@@ -32,12 +40,14 @@ public class ItemsService {
         return itemsRepo.findById(itemId);
     }
 
-    public ResponseMessage save(Items item) {
-        itemsRepo.save(item);
-        responseMessage.setMessage("Success saving new item");
-        responseMessage.setStatus(1);
+    public List<Items> findItemsByRestaurantId(Long restaurantId) {
+        List<Items> itemsList = itemsRepo.findAllByRestaurantsId(restaurantId);
 
-        return responseMessage;
+        if (!itemsList.isEmpty()) {
+            itemsList.forEach(System.out::println);
+            return itemsList;
+        }
+        throw new NoSuchElementException();
     }
 
     public ResponseMessage createItem(String newItem, Long restaurantId, MultipartFile multipartFile) throws IOException {
@@ -69,16 +79,6 @@ public class ItemsService {
         return responseMessage;
     }
 
-    public List<Items> findItemsByRestaurantId(Long restaurantId) {
-        List<Items> itemsList = itemsRepo.findAllByRestaurantsId(restaurantId);
-
-        if (!itemsList.isEmpty()) {
-            itemsList.forEach(System.out::println);
-            return itemsList;
-        }
-        throw new NoSuchElementException();
-    }
-
     public ResponseMessage updateItem(Long restaurantId, Long itemId, Items newItem) {
         Optional<Restaurants> optionalRestaurant = restaurantsService.findById(restaurantId);
         Optional<Items> optionalItems = findById(itemId);
@@ -89,9 +89,6 @@ public class ItemsService {
                 item.setPrice(newItem.getPrice());
                 return save(item);
             });
-
-            responseMessage.setMessage("Success updating item");
-            responseMessage.setStatus(1);
         } else {
             responseMessage.setMessage("Error finding the restaurant or the item");
             responseMessage.setStatus(-1);
@@ -108,7 +105,7 @@ public class ItemsService {
             responseMessage.setMessage("Success deleting itemId + " + optionalItems.get().getId());
             responseMessage.setStatus(1);
         } else {
-            responseMessage.setMessage("Error in deleting item " + optionalItems.get().getId());
+            responseMessage.setMessage("Error happened while deleting item ");
             responseMessage.setStatus(-1);
         }
         return responseMessage;

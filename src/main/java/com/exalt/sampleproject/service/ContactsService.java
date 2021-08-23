@@ -31,7 +31,6 @@ public class ContactsService {
 
     public ResponseMessage save(Contacts contacts) {
         contactsRepo.save(contacts);
-
         responseMessage.setMessage("Successfully saved");
         responseMessage.setStatus(1);
 
@@ -44,8 +43,6 @@ public class ContactsService {
                 contact.setLocation(optionalLocation.get());
                 save(contact);
             });
-            responseMessage.setMessage("Successfully created");
-            responseMessage.setStatus(1);
         } else {
             responseMessage.setMessage("Could not create new contact");
             responseMessage.setStatus(-1);
@@ -60,9 +57,6 @@ public class ContactsService {
                 contacts.forEach(this::save);
                 return contacts;
             });
-
-            responseMessage.setMessage("Successfully updated");
-            responseMessage.setStatus(1);
         } else {
             responseMessage.setMessage("Could not update the contact details.");
             responseMessage.setStatus(-1);

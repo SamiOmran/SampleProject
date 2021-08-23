@@ -42,8 +42,7 @@ public class ItemsController {
         return itemsService.findItemsByRestaurantId(restaurantId);
     }
 
-    @PostMapping(path = "/restaurants/{restaurantId}/items", produces = {"application/json"}, consumes = {MediaType.APPLICATION_JSON_VALUE,
-                                                                                                             MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(path = "/restaurants/{restaurantId}/items", produces = {"application/json"}, consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseMessage createItem(@RequestPart String newItem, @RequestPart MultipartFile multipartFile, @PathVariable Long restaurantId) throws IOException {
         return itemsService.createItem(newItem, restaurantId, multipartFile);
     }
@@ -57,5 +56,4 @@ public class ItemsController {
     public ResponseMessage deleteItem(@PathVariable Long restaurantId, @PathVariable Long itemId) {
         return itemsService.deleteItem(restaurantId, itemId);
     }
-
 }

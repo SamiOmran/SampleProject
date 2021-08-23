@@ -33,7 +33,7 @@ public class LocationsService {
     public ResponseMessage save(Locations location) {
         locationsRepo.save(location);
 
-        responseMessage.setMessage("Successfully saved");
+        responseMessage.setMessage("Successfully location saved");
         responseMessage.setStatus(1);
         return responseMessage;
     }
@@ -45,8 +45,6 @@ public class LocationsService {
                     location.setRestaurant(restaurant);
                     return save(location);});
             });
-            responseMessage.setMessage("Successfully created");
-            responseMessage.setStatus(1);
         } else {
             responseMessage.setMessage("RestaurantId " + optionalRestaurant.get().getId() + ", not found.");
             responseMessage.setStatus(-1);

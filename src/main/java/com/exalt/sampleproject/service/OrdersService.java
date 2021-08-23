@@ -30,7 +30,7 @@ public class OrdersService {
 
     public ResponseMessage save(Orders order) {
         ordersRepo.save(order);
-        responseMessage.setMessage("Success adding new order");
+        responseMessage.setMessage("Successfully order saved");
         responseMessage.setStatus(1);
 
         return responseMessage;
@@ -55,15 +55,12 @@ public class OrdersService {
             newOrder.setTotal(newOrder.getQuantity() * price);
 
             newOrder.addItem(item);
-            save(newOrder);
-
-            responseMessage.setMessage("Success saving new order");
-            responseMessage.setStatus(1);
+            return save(newOrder);
         } else {
             responseMessage.setMessage("Could not find the item for the order");
             responseMessage.setStatus(-1);
+            return responseMessage;
         }
-        return responseMessage;
     }
 
     public ResponseMessage updateOrder(Orders updatedOrder, Long orderId) {

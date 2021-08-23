@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -29,9 +30,13 @@ public class Orders {
 
     @ManyToMany(fetch = FetchType.EAGER )
     @JoinTable(
-            name = "order_items",
-            joinColumns = @JoinColumn(name = "item_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id")
+            name = "orders_items",
+            joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "item_id", referencedColumnName = "id")
     )
-    private Set<Items> items;
+    private Set<Items> items = new HashSet<>();
+
+    public void addItem(Items item) {
+        this.items.add(item);
+    }
 }

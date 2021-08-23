@@ -17,12 +17,9 @@ import java.util.Optional;
 @RestController
 public class RestaurantsController {
     private final RestaurantsService restaurantsService;
-    private final LocationsService locationsService;
-    private final static Logger logger = LoggerFactory.getLogger(RestaurantsController.class);
 
-    public RestaurantsController(RestaurantsService restaurantsService, LocationsService locationsService, ContactsService contactsService) {
+    public RestaurantsController(RestaurantsService restaurantsService) {
         this.restaurantsService = restaurantsService;
-        this.locationsService = locationsService;
     }
 
     /**
@@ -49,16 +46,7 @@ public class RestaurantsController {
      */
     @PostMapping(path = "/restaurants", produces = {"application/json"})
     public ResponseMessage createRestaurant(/*@RequestBody Restaurants restaurant,*/ @RequestBody AllData allData) {
-        Restaurants restaurant = new Restaurants();
-        restaurant.setName(allData.getName());
-        restaurantsService.save(restaurant);
-
-        List<Locations> locations = allData.getLocations();
-        Optional<Restaurants> optionalRestaurants = Optional.of(restaurant);
-        locationsService.createLocation(locations, optionalRestaurants);
-
-        logger.info("Successfully created restaurant: " + restaurant.getName());
-        return restaurantsService.save(restaurant);
+        return restaurantsService.createRestaurant(allData);
     }
 
     /**
