@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class Contact {
+public class Contacts {
 
     @Id
     @GeneratedValue
@@ -18,12 +18,13 @@ public class Contact {
     private Long id;
 
     @Column @JsonProperty @NonNull
-    private String telephone;
+    private String type;
 
     @Column @JsonProperty @NonNull
-    private String phone;
+    private String value;
 
-    @OneToOne @NonNull
-    private Restaurants restaurant;
+    @ManyToOne @NonNull
+    @JoinColumn(name = "location_id")
+    private Locations location;
 
 }
