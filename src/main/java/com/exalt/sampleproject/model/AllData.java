@@ -13,7 +13,7 @@ public class AllData {
     //private List<Locations> locations;
     private List<Contacts> contacts;
 
-    public AllData(String name, List<Locations> locations, List<Contacts> contacts) {
+    public AllData(String name, List<Contacts> contacts) {
         this.name = name;
         //   this.locations = locations;
         this.contacts = contacts;
