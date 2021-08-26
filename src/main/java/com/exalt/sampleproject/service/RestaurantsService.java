@@ -2,6 +2,7 @@ package com.exalt.sampleproject.service;
 
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.AllData;
+import com.exalt.sampleproject.model.Contacts;
 import com.exalt.sampleproject.model.Locations;
 import com.exalt.sampleproject.model.Restaurants;
 import com.exalt.sampleproject.repository.RestaurantsRepo;
@@ -16,12 +17,14 @@ import java.util.Optional;
 public class RestaurantsService {
     private final RestaurantsRepo restaurantsRepo;
     private final LocationsService locationsService;
+    private final ContactsService contactsService;
 //    private final static Logger logger = LoggerFactory.getLogger(RestaurantsService.class);
     private final ResponseMessage responseMessage = new ResponseMessage();
 
-    public RestaurantsService(RestaurantsRepo restaurantsRepo, LocationsService locationsService) {
+    public RestaurantsService(RestaurantsRepo restaurantsRepo, LocationsService locationsService, ContactsService contactsService) {
         this.restaurantsRepo = restaurantsRepo;
         this.locationsService = locationsService;
+        this.contactsService = contactsService;
     }
 
     public ResponseMessage save(Restaurants restaurant) {
@@ -46,9 +49,12 @@ public class RestaurantsService {
         restaurant.setName(allData.getName());
         save(restaurant);
 
-        List<Locations> locations = allData.getLocations();
-        Optional<Restaurants> optionalRestaurants = Optional.of(restaurant);
-        locationsService.createLocation(locations, optionalRestaurants);
+        List<Contacts> contactsList = allData.getContacts();
+        contactsService.createContact2(contactsList, restaurant);
+//        List<Locations> locations = allData.getLocations();
+//        Optional<Restaurants> optionalRestaurants = Optional.of(restaurant);
+//        locationsService.createLocation(locations, optionalRestaurants);
+
 
         responseMessage.setMessage("Successfully restaurant created");
         responseMessage.setStatus(1);

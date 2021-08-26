@@ -3,6 +3,7 @@ package com.exalt.sampleproject.service;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.Contacts;
 import com.exalt.sampleproject.model.Locations;
+import com.exalt.sampleproject.model.Restaurants;
 import com.exalt.sampleproject.repository.ContactsRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +15,13 @@ import java.util.Optional;
 @Service
 public class ContactsService {
     private final ContactsRepo contactsRepo;
+    private final LocationsService locationsService;
     private final ResponseMessage responseMessage = new ResponseMessage();
     private final static Logger logger = LoggerFactory.getLogger(ContactsService.class);
 
-    public ContactsService(ContactsRepo contactsRepo) {
+    public ContactsService(ContactsRepo contactsRepo, LocationsService locationsService) {
         this.contactsRepo = contactsRepo;
+        this.locationsService = locationsService;
     }
 
     public List<Contacts> findAll() {
@@ -35,6 +38,13 @@ public class ContactsService {
         responseMessage.setStatus(1);
 
         return responseMessage;
+    }
+
+    public void createContact2(List<Contacts> newContacts, Restaurants restaurant ) {
+        newContacts.forEach(contact -> {
+            save(contact);
+            locationsService.createLocation2(contact.getLocation(), restaurant);
+        });
     }
 
     public ResponseMessage createContact(List<Contacts> contacts, Optional<Locations> optionalLocation) {

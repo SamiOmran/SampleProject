@@ -38,6 +38,11 @@ public class LocationsService {
         return responseMessage;
     }
 
+    public void createLocation2(Locations newLocation, Restaurants restaurant) {
+        newLocation.setRestaurant(restaurant);
+        save(newLocation);
+    }
+
     public ResponseMessage createLocation(List<Locations> locations, Optional<Restaurants> optionalRestaurant) {
         if (optionalRestaurant.isPresent()) {
             locations.forEach(location -> {
