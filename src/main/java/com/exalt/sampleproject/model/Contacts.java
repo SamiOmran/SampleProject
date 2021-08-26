@@ -23,7 +23,7 @@ public class Contacts {
     @Column @JsonProperty @NonNull
     private String value;
 
-    @ManyToOne @NonNull
+    @ManyToOne(cascade = CascadeType.ALL) @NonNull
     @JoinColumn(name = "location_id")
     private Locations location;
 

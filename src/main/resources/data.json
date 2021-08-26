@@ -27,7 +27,37 @@
       "telephone":"0922",
       "phone":"05699"
     }
+  },
+
+
+  {
+    "name" : "Stream shawerma",
+    "contacts" : [
+      {
+        "type" : "phone",
+        "value" : "0565656",
+        "locations" : [
+          {
+            "city":"Rammallah",
+            "street":"Main street",
+            "section":"A"
+          }
+        ]
+      },
+      {
+        "type" : "telephone",
+        "value" : "0999",
+        "locations" : [
+          {
+            "city":"Nablus",
+            "street":"Amman street",
+            "section":"55"
+          }
+        ]
+      }
+    ]
   }
 ]
+
 
 
