@@ -20,7 +20,6 @@ public class ItemsController {
         this.itemsService = itemsService;
     }
 
-
     @GetMapping(path = "/restaurants/items")
     public List<Items> listAllItems() {
         return itemsService.findAll();

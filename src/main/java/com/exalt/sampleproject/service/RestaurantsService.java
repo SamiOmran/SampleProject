@@ -19,7 +19,7 @@ public class RestaurantsService {
     private final LocationsService locationsService;
     private final ContactsService contactsService;
 //    private final static Logger logger = LoggerFactory.getLogger(RestaurantsService.class);
-    private final ResponseMessage responseMessage = new ResponseMessage();
+    private ResponseMessage responseMessage = new ResponseMessage();
 
     public RestaurantsService(RestaurantsRepo restaurantsRepo, LocationsService locationsService, ContactsService contactsService) {
         this.restaurantsRepo = restaurantsRepo;
@@ -44,20 +44,26 @@ public class RestaurantsService {
         return restaurantsRepo.findAll();
     }
 
-    public ResponseMessage createRestaurant(AllData allData) {
+    public ResponseMessage createRestaurant2(AllData allData) {
         Restaurants restaurant = new Restaurants();
         restaurant.setName(allData.getName());
-        save(restaurant);
+        responseMessage = save(restaurant);
 
         List<Contacts> contactsList = allData.getContacts();
         contactsService.createContact2(contactsList, restaurant);
-//        List<Locations> locations = allData.getLocations();
-//        Optional<Restaurants> optionalRestaurants = Optional.of(restaurant);
-//        locationsService.createLocation(locations, optionalRestaurants);
 
+        return responseMessage;
+    }
 
-        responseMessage.setMessage("Successfully restaurant created");
-        responseMessage.setStatus(1);
+    public ResponseMessage createRestaurant(AllData allData) {
+        Restaurants restaurant = new Restaurants();
+        restaurant.setName(allData.getName());
+        responseMessage = save(restaurant);
+
+        List<Locations> locations = allData.getLocations();
+        Optional<Restaurants> optionalRestaurants = Optional.of(restaurant);
+        locationsService.createLocation(locations, optionalRestaurants);
+
         return responseMessage;
     }
 
@@ -67,7 +73,7 @@ public class RestaurantsService {
         if (optionalRestaurants.isPresent()) {
             optionalRestaurants.map(restaurant -> {
                 restaurant.setName(updatedRestaurant.getName());
-                return save(restaurant);
+                return responseMessage = save(restaurant);
             });
         } else {
             responseMessage.setMessage("RestaurantId " + id + ", was not found.");

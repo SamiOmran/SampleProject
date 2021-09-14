@@ -13,9 +13,11 @@ import java.util.Optional;
 
 @RestController
 public class ContactsController {
+    // fields
     private final ContactsService contactsService;
     private final LocationsService locationsService;
 
+    // Constructor
     public ContactsController(ContactsService contactsService, LocationsService locationsService) {
         this.contactsService = contactsService;
         this.locationsService = locationsService;
@@ -36,7 +38,7 @@ public class ContactsController {
      * @return contact details
      */
     @GetMapping(path = "/restaurants/{locationId}/contacts", produces = {"application/json"})
-    public List<Contacts> listContact(@PathVariable Long locationId) {
+    public List<Contacts> getContacts(@PathVariable Long locationId) {
         Optional<Locations> optionalLocation = findLocation(locationId);
 
         if (optionalLocation.isPresent()) {

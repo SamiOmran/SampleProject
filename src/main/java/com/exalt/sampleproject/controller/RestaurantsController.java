@@ -46,7 +46,8 @@ public class RestaurantsController {
      */
     @PostMapping(path = "/restaurants", produces = {"application/json"})
     public ResponseMessage createRestaurant(/*@RequestBody Restaurants restaurant,*/ @RequestBody AllData allData) {
-        return restaurantsService.createRestaurant(allData);
+        //return restaurantsService.createRestaurant(allData);
+        return restaurantsService.createRestaurant2(allData);
     }
 
     /**

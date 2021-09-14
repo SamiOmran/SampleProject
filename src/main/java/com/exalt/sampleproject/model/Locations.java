@@ -2,6 +2,7 @@ package com.exalt.sampleproject.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import org.springframework.context.annotation.Bean;
 
 import javax.persistence.*;
 

@@ -5,6 +5,7 @@ import com.exalt.sampleproject.exception.ResourceNotFoundException;
 import com.exalt.sampleproject.model.Offers;
 import com.exalt.sampleproject.model.Restaurants;
 import com.exalt.sampleproject.repository.OffersRepo;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,7 +22,6 @@ public class OffersSerivce {
         this.restaurantsService = restaurantsService;
         this.offersRepo = offersRepo;
     }
-
 
     public ResponseMessage save(Offers offer) {
         offersRepo.save(offer);

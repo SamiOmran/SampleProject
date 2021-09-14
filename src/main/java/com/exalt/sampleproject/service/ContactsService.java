@@ -7,6 +7,8 @@ import com.exalt.sampleproject.model.Restaurants;
 import com.exalt.sampleproject.repository.ContactsRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -85,5 +87,15 @@ public class ContactsService {
             responseMessage.setStatus(-1);
         }
         return responseMessage;
+    }
+
+    @Bean
+    public void print1() {
+        logger.info("using @Bean annotation?");
+    }
+
+    @Autowired
+    public void print2() {
+        logger.info("using @Autowired annotation");
     }
 }
