@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,6 +94,27 @@ public class RestaurantsService {
         }
 
         return responseMessage;
+    }
+
+    public AllData getRestaurantsInfo(Long id) {
+        Optional<Restaurants> optionalRestaurant = findById(id);
+
+        if (optionalRestaurant.isPresent()) {
+            AllData allData = new AllData();
+            allData.setName(optionalRestaurant.get().getName());
+
+            List<Locations> locationsList = locationsService.findLocationByRestaurantId(id);
+            allData.setLocations(locationsList);
+
+            List<Contacts> contactsList = new ArrayList<>();
+            locationsList.forEach(location -> {
+                Optional<Locations> optionalLocation = Optional.of(location);
+                contactsList.addAll(contactsService.findContactsByLocation(optionalLocation));
+            });
+            allData.setContacts(contactsList);
+            return allData;
+        }
+       return null;
     }
 
 }
