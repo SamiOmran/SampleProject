@@ -78,6 +78,8 @@ public class LocationsService {
 
     public ResponseMessage deleteLocationByRestaurant(Optional<Restaurants> optionalRestaurant) {
         if (optionalRestaurant.isPresent()) {
+            List<Locations> locationsList = findLocationByRestaurantId(optionalRestaurant.get().getId());
+            locationsList.forEach(locationsRepo::delete);
             responseMessage.setMessage("Successfully deleted");
             responseMessage.setStatus(1);
         } else {
