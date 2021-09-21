@@ -89,13 +89,21 @@ public class ContactsService {
         return responseMessage;
     }
 
-    @Bean
-    public void print1() {
-        logger.info("using @Bean annotation?");
+    public ResponseMessage deleteContact(Long restaurantId) {
+        List<Locations> locationsList = locationsService.findLocationByRestaurantId(restaurantId);
+        if (!locationsList.isEmpty()) {
+            locationsList.forEach(contactsRepo::deleteContactByLocation);
+            responseMessage.setMessage("Successfully deleted");
+            responseMessage.setStatus(1);
+        } else {
+            responseMessage.setMessage("Could not delete contact");
+            responseMessage.setStatus(-1);
+        }
+        return responseMessage;
     }
 
-    @Autowired
-    public void print2() {
-        logger.info("using @Autowired annotation");
+    public Contacts findById(Long contactId) {
+        Optional<Contacts> optionalContacts = contactsRepo.findById(contactId);
+        return optionalContacts.get();
     }
 }

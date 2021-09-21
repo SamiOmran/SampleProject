@@ -1,0 +1,41 @@
+[
+  {
+    "name" :"Ward",
+    "contacts" : [
+      {
+        "type" : "phone",
+        "value" : "0565656",
+        "location" :
+        {
+          "city":"Rammallah",
+          "street":"Main street",
+          "section":"A"
+        }
+      },
+      {
+        "type" : "telephone",
+        "value" : "0999",
+        "location" :
+        {
+          "city":"Nablus",
+          "street":"Amman street",
+          "section":"55"
+        }
+      }
+    ]
+  },
+  {
+    "name": "90's",
+    "contacts": [
+      {
+        "type" : "telephone",
+        "value" : "092345125",
+        "location" : {
+          "city" : "Madrid",
+          "street" : "10th st",
+          "section" : "capital"
+        }
+      }
+    ]
+  }
+]

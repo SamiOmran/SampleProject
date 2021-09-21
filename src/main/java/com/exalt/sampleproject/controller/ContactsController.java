@@ -27,6 +27,11 @@ public class ContactsController {
         return locationsService.findById(locationId);
     }
 
+    @GetMapping(path = "/restaurants/contacts/{contactId}", produces = {"application/json"})
+    public Contacts getContact(@PathVariable Long contactId) {
+        return contactsService.findById(contactId);
+    }
+
     @GetMapping(path = "/restaurants/contacts", produces = {"application/json"})
     public List<Contacts> getAllContacts() {
         return contactsService.findAll();
