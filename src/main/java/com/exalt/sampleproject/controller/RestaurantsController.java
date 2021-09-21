@@ -4,15 +4,15 @@ import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.AllData;
 import com.exalt.sampleproject.model.Restaurants;
 import com.exalt.sampleproject.service.RestaurantsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class RestaurantsController {
     private final RestaurantsService restaurantsService;
+    Logger logger = LoggerFactory.getLogger(RestaurantsController.class);
 
     public RestaurantsController(RestaurantsService restaurantsService) {
         this.restaurantsService = restaurantsService;
@@ -22,29 +22,27 @@ public class RestaurantsController {
      * @return list of Restaurants in DB
      */
     @GetMapping(path = "/restaurants", produces = {"application/json"})
-    public List<Restaurants> listRestaurants() {
-        return restaurantsService.findAll();
+    public Object listRestaurants() {
+        return restaurantsService.getAllRestaurants();
     }
 
     /**
-     * @param id of that restaurant
-     * @return specific restaurant
+     * @param stringId restaurant
+     * @return restaurant info (name, location, contacts)
      */
-    @GetMapping(path = "/restaurants/{id}", produces = {"application/json"})
-    public Restaurants getRestaurant(@PathVariable Long id) {
-        Optional<Restaurants> optionalRestaurants =  restaurantsService.findById(id);
-        return (optionalRestaurants.isPresent()) ? optionalRestaurants.get() : null;
+    @GetMapping(path = "/restaurants/{stringId}")
+    public Object getRestaurantData(@PathVariable String stringId) {
+        return restaurantsService.getRestaurantsInfo(stringId);
     }
 
-    /**
-     * @param allData new restaurant to be added
-     * @return response status
-     */
-    @PostMapping(path = "/restaurants", produces = {"application/json"})
-    public ResponseMessage createRestaurant(/*@RequestBody Restaurants restaurant,*/ @RequestBody AllData allData) {
-        //return restaurantsService.createRestaurant(allData);
-        return restaurantsService.createRestaurant2(allData);
-    }
+//    /**
+//     * @param allData new restaurant to be added
+//     * @return response status
+//     */
+//    @PostMapping(path = "/restaurants", produces = {"application/json"})
+//    public ResponseMessage createRestaurant(@RequestBody AllData allData) {
+//        return restaurantsService.createRestaurant(allData);
+//    }
 
     /**
      * @param id of old restaurant
@@ -65,17 +63,9 @@ public class RestaurantsController {
         return restaurantsService.deleteRestaurant(id);
     }
 
-
-    /***
-     * @param id restaurant
-     * @return restaurant info (name, location, contacts)
-     */
-    @GetMapping(path = "/restaurants/{id}")
-    public AllData getRestaurantsData(@PathVariable Long id) {
-        return restaurantsService.getRestaurantsInfo(id);
+    @PostMapping(path = "/restaurants")
+    public ResponseMessage createRestaurantUsingFile(@RequestParam MultipartFile fileData) {
+        return restaurantsService.createRestaurantUsingFile(fileData);
     }
-
-
-
 
 }

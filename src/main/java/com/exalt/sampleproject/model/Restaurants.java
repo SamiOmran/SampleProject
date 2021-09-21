@@ -9,11 +9,11 @@ import javax.persistence.*;
 @Setter
 @Getter
 @RequiredArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 public class Restaurants {
     @Id @GeneratedValue @JsonProperty
     private Long id;
 
-    @Column(nullable = false) @JsonProperty @NonNull
+    @Column(nullable = false) @JsonProperty
     private String name;
 }
