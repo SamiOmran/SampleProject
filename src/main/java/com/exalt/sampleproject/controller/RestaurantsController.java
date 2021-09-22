@@ -63,6 +63,12 @@ public class RestaurantsController {
         return restaurantsService.deleteRestaurant(id);
     }
 
+
+    /**
+     * create Post method to create resources from uploaded json file
+     * @param fileData json file contains data
+     * @return response message holds status
+     */
     @PostMapping(path = "/restaurants")
     public ResponseMessage createRestaurantUsingFile(@RequestParam MultipartFile fileData) {
         return restaurantsService.createRestaurantUsingFile(fileData);

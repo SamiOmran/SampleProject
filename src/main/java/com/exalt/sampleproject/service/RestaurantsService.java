@@ -1,5 +1,6 @@
 package com.exalt.sampleproject.service;
 
+import com.exalt.sampleproject.dto.JsonContacts;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.AllData;
 import com.exalt.sampleproject.model.Contacts;
@@ -110,7 +111,8 @@ public class RestaurantsService {
                 List<Contacts> contactsList = new ArrayList<>();
                 locationsList.forEach(location -> {
                     Optional<Locations> optionalLocation = Optional.of(location);
-                    contactsList.addAll(contactsService.findContactsByLocation(optionalLocation));
+                    JsonContacts jsonContacts = contactsService.findContactsByLocation(optionalLocation);
+                    contactsList.addAll(jsonContacts.getContactsList());
                 });
                 allData.setContacts(contactsList);
                 return allData;
