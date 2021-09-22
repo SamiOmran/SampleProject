@@ -10,15 +10,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.junit.AfterClass;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Type;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,6 @@ public class RestaurantsService {
     private final RestaurantsRepo restaurantsRepo;
     private final LocationsService locationsService;
     private final ContactsService contactsService;
-//    private final static Logger logger = LoggerFactory.getLogger(RestaurantsService.class);
     private ResponseMessage responseMessage = new ResponseMessage();
 
     public RestaurantsService(RestaurantsRepo restaurantsRepo, LocationsService locationsService, ContactsService contactsService) {
@@ -150,7 +148,7 @@ public class RestaurantsService {
             responseMessage.setMessage("Couldn't upload file. " + e.getMessage());
             responseMessage.setStatus(-1);
         }
-        //JSON parser object to parse read file
+
         JSONParser jsonParser = new JSONParser();
         JSONArray array = new JSONArray();
         try  {
@@ -176,9 +174,7 @@ public class RestaurantsService {
         save(restaurant);
 
         ArrayList<Contacts> contactsList = new ArrayList<>();
-        ArrayList<Object> objectList = new ArrayList<>();
-
-        objectList = (ArrayList<Object>) newRestaurant.get("contacts");
+        ArrayList<Object> objectList = (ArrayList<Object>) newRestaurant.get("contacts");
 
         objectList.forEach(obj -> {
             JSONObject jsonObject = (JSONObject) obj;
@@ -195,5 +191,17 @@ public class RestaurantsService {
             contactsList.add(newContact);
         });
         contactsService.createContact2(contactsList, restaurant);
+    }
+
+    private void writeToFile() throws IOException {
+        String path = "G:\\Training in companies\\Exalt\\SampleProject\\src\\main\\resources\\files";
+        List<Restaurants> restaurantsList = findAll();
+
+        Restaurants rr = findById(Long.parseLong("1")).get();
+
+        FileOutputStream fileOut = new FileOutputStream(path);
+        ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+
+        objectOut.writeObject(rr);
     }
 }
