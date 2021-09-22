@@ -1,5 +1,6 @@
 package com.exalt.sampleproject.service;
 
+import com.exalt.sampleproject.dto.JsonContacts;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.Contacts;
 import com.exalt.sampleproject.model.Locations;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,8 +28,16 @@ public class ContactsService {
         this.locationsService = locationsService;
     }
 
-    public List<Contacts> findAll() {
-        return contactsRepo.findAll();
+    public JsonContacts findAll() {
+        List<Contacts> contactsList = contactsRepo.findAll();
+        JsonContacts jsonContacts = new JsonContacts();
+        if (contactsList.isEmpty()) {
+            jsonContacts.setMessage("No contacts Available");
+        } else {
+            jsonContacts.setContactsList(contactsList);
+            jsonContacts.setMessage("Success getting contacts");
+        }
+        return jsonContacts;
     }
 
     public List<Contacts> findContactsByLocation(Optional<Locations> optionalLocation) {
@@ -77,6 +87,7 @@ public class ContactsService {
         return responseMessage;
     }
 
+    @Transactional
     public ResponseMessage deleteContactByLocation(Optional<Locations> optionalLocation) {
         if (optionalLocation.isPresent()) {
             contactsRepo.deleteContactByLocation(optionalLocation.get());

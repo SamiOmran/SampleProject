@@ -1,5 +1,6 @@
 package com.exalt.sampleproject.controller;
 
+import com.exalt.sampleproject.dto.JsonContacts;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.exception.ResourceNotFoundException;
 import com.exalt.sampleproject.model.Contacts;
@@ -33,7 +34,7 @@ public class ContactsController {
     }
 
     @GetMapping(path = "/restaurants/contacts", produces = {"application/json"})
-    public List<Contacts> getAllContacts() {
+    public JsonContacts getAllContacts() {
         return contactsService.findAll();
     }
 
