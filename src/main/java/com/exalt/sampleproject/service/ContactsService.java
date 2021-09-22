@@ -8,11 +8,10 @@ import com.exalt.sampleproject.model.Restaurants;
 import com.exalt.sampleproject.repository.ContactsRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +20,7 @@ public class ContactsService {
     private final ContactsRepo contactsRepo;
     private final LocationsService locationsService;
     private final ResponseMessage responseMessage = new ResponseMessage();
-    private final static Logger logger = LoggerFactory.getLogger(ContactsService.class);
+    //private final static Logger logger = LoggerFactory.getLogger(ContactsService.class);
 
     public ContactsService(ContactsRepo contactsRepo, LocationsService locationsService) {
         this.contactsRepo = contactsRepo;
@@ -30,18 +29,26 @@ public class ContactsService {
 
     public JsonContacts findAll() {
         List<Contacts> contactsList = contactsRepo.findAll();
-        JsonContacts jsonContacts = new JsonContacts();
+        JsonContacts jsonContacts;
+
         if (contactsList.isEmpty()) {
-            jsonContacts.setMessage("No contacts Available");
+            jsonContacts = new JsonContacts("No contacts Available", null);
         } else {
-            jsonContacts.setContactsList(contactsList);
-            jsonContacts.setMessage("Success getting contacts");
+            jsonContacts = new JsonContacts("Success getting contacts", contactsList);
         }
         return jsonContacts;
     }
 
-    public List<Contacts> findContactsByLocation(Optional<Locations> optionalLocation) {
-        return contactsRepo.findAllByLocation(optionalLocation.get());
+    public JsonContacts findContactsByLocation(Optional<Locations> optionalLocation) {
+        List<Contacts> contactsList = contactsRepo.findAllByLocation(optionalLocation.get());
+        JsonContacts jsonContacts;
+
+        if (contactsList.isEmpty()) {
+            jsonContacts = new JsonContacts("No contacts Available", null);
+        } else {
+            jsonContacts = new JsonContacts("Success getting contacts", contactsList);
+        }
+        return jsonContacts;
     }
 
     public ResponseMessage save(Contacts contacts) {
@@ -76,7 +83,10 @@ public class ContactsService {
     public ResponseMessage updateContactByLocation(Optional<Locations> optionalLocation, List<Contacts> contacts) {
         if (optionalLocation.isPresent()) {
             optionalLocation.map(location -> {
-                contacts.forEach(this::save);
+                contacts.forEach(contact -> {
+                    contact.setLocation(location);
+                    save(contact);
+                });
                 return contacts;
             });
         } else {
@@ -113,8 +123,17 @@ public class ContactsService {
         return responseMessage;
     }
 
-    public Contacts findById(Long contactId) {
+    public JsonContacts findById(Long contactId) {
         Optional<Contacts> optionalContacts = contactsRepo.findById(contactId);
-        return optionalContacts.get();
+        JsonContacts jsonContacts;
+
+        if (optionalContacts.isPresent()) {
+            List<Contacts> contactsList = new ArrayList<>();
+            contactsList.add(optionalContacts.get());
+            jsonContacts = new JsonContacts("Success getting contact", contactsList);
+        } else {
+            jsonContacts = new JsonContacts("Couldn't get contact", null);
+        }
+        return jsonContacts;
     }
 }

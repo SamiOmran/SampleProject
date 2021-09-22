@@ -29,7 +29,7 @@ public class ContactsController {
     }
 
     @GetMapping(path = "/restaurants/contacts/{contactId}", produces = {"application/json"})
-    public Contacts getContact(@PathVariable Long contactId) {
+    public JsonContacts getContact(@PathVariable Long contactId) {
         return contactsService.findById(contactId);
     }
 
@@ -44,7 +44,7 @@ public class ContactsController {
      * @return contact details
      */
     @GetMapping(path = "/restaurants/{locationId}/contacts", produces = {"application/json"})
-    public List<Contacts> getContacts(@PathVariable Long locationId) {
+    public JsonContacts getContactsForLocation(@PathVariable Long locationId) {
         Optional<Locations> optionalLocation = findLocation(locationId);
 
         if (optionalLocation.isPresent()) {
@@ -66,12 +66,12 @@ public class ContactsController {
 
     /**
      * @param contacts the updated one
-     * @param restaurantId id for the restaurant to de edited
+     * @param locationId id for the restaurant to de edited
      * @return message status
      */
-    @PutMapping(path = "restaurants/{restaurantId}/contacts", produces = {"application/json"})
-    public ResponseMessage updateContact(@RequestBody List<Contacts> contacts, @PathVariable Long restaurantId) {
-        return contactsService.updateContactByLocation(findLocation(restaurantId), contacts);
+    @PutMapping(path = "restaurants/{locationId}/contacts", produces = {"application/json"})
+    public ResponseMessage updateContact(@RequestBody List<Contacts> contacts, @PathVariable Long locationId) {
+        return contactsService.updateContactByLocation(findLocation(locationId), contacts);
     }
 
     /**
@@ -82,6 +82,4 @@ public class ContactsController {
     public ResponseMessage deleteContact(@PathVariable Long locationId) {
         return contactsService.deleteContactByLocation(findLocation(locationId));
     }
-
-
 }
