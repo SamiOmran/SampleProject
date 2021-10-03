@@ -1,5 +1,6 @@
 package com.exalt.sampleproject.controller;
 
+import com.exalt.sampleproject.dto.JsonItems;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.exception.ResourceNotFoundException;
 import com.exalt.sampleproject.model.Items;
@@ -21,19 +22,13 @@ public class ItemsController {
     }
 
     @GetMapping(path = "/restaurants/items")
-    public List<Items> listAllItems() {
+    public JsonItems listAllItems() {
         return itemsService.findAll();
     }
 
     @GetMapping(path = "/restaurants/items/{itemId}")
-    public Items getItem(@PathVariable Long itemId) {
-        Optional<Items> optionalItem = itemsService.findById(itemId);
-
-        if (optionalItem.isPresent()) {
-            return optionalItem.get();
-        } else {
-            throw new ResourceNotFoundException("Could not find item");
-        }
+    public JsonItems getItem(@PathVariable Long itemId) {
+        return itemsService.findById(itemId);
     }
 
     @GetMapping(path = "/restaurants/{restaurantId}/items", produces = {"application/json"})

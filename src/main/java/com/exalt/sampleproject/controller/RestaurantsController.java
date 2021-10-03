@@ -1,5 +1,6 @@
 package com.exalt.sampleproject.controller;
 
+import com.exalt.sampleproject.dto.JsonAllData;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.AllData;
 import com.exalt.sampleproject.model.Restaurants;
@@ -12,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class RestaurantsController {
     private final RestaurantsService restaurantsService;
-    Logger logger = LoggerFactory.getLogger(RestaurantsController.class);
+    //Logger logger = LoggerFactory.getLogger(RestaurantsController.class);
 
     public RestaurantsController(RestaurantsService restaurantsService) {
         this.restaurantsService = restaurantsService;
@@ -22,7 +23,7 @@ public class RestaurantsController {
      * @return list of Restaurants in DB
      */
     @GetMapping(path = "/restaurants", produces = {"application/json"})
-    public Object listRestaurants() {
+    public JsonAllData listRestaurants() {
         return restaurantsService.getAllRestaurants();
     }
 
@@ -35,14 +36,14 @@ public class RestaurantsController {
         return restaurantsService.getRestaurantsInfo(stringId);
     }
 
-//    /**
-//     * @param allData new restaurant to be added
-//     * @return response status
-//     */
-//    @PostMapping(path = "/restaurants", produces = {"application/json"})
-//    public ResponseMessage createRestaurant(@RequestBody AllData allData) {
-//        return restaurantsService.createRestaurant(allData);
-//    }
+    /**
+     * @param allData new restaurant to be added
+     * @return response status
+     */
+    @PostMapping(path = "/restaurants", produces = {"application/json"})
+    public ResponseMessage createRestaurant(@RequestBody AllData allData) {
+        return restaurantsService.createRestaurant(allData);
+    }
 
     /**
      * @param id of old restaurant
@@ -69,8 +70,8 @@ public class RestaurantsController {
      * @param fileData json file contains data
      * @return response message holds status
      */
-    @PostMapping(path = "/restaurants")
-    public ResponseMessage createRestaurantUsingFile(@RequestParam MultipartFile fileData) {
+    @PostMapping(path = "/restaurants/file")
+    public ResponseMessage createRestaurantUsingFile(MultipartFile fileData) {
         return restaurantsService.createRestaurantUsingFile(fileData);
     }
 

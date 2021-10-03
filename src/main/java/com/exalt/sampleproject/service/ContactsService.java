@@ -1,6 +1,7 @@
 package com.exalt.sampleproject.service;
 
 import com.exalt.sampleproject.dto.JsonContacts;
+import com.exalt.sampleproject.dto.JsonLocations;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.Contacts;
 import com.exalt.sampleproject.model.Locations;
@@ -20,6 +21,8 @@ public class ContactsService {
     private final ContactsRepo contactsRepo;
     private final LocationsService locationsService;
     private final ResponseMessage responseMessage = new ResponseMessage();
+    private final static String SUCCESS_MESSAGE = "Success getting the contacts";
+    private final static String FAIL_MESSAGE = "No contacts available";
     //private final static Logger logger = LoggerFactory.getLogger(ContactsService.class);
 
     public ContactsService(ContactsRepo contactsRepo, LocationsService locationsService) {
@@ -29,26 +32,30 @@ public class ContactsService {
 
     public JsonContacts findAll() {
         List<Contacts> contactsList = contactsRepo.findAll();
+        String message = (contactsList.isEmpty())? FAIL_MESSAGE : SUCCESS_MESSAGE;
+
+        return new JsonContacts(message, contactsList);
+    }
+
+    public JsonContacts findById(Long contactId) {
+        Optional<Contacts> optionalContacts = contactsRepo.findById(contactId);
         JsonContacts jsonContacts;
 
-        if (contactsList.isEmpty()) {
-            jsonContacts = new JsonContacts("No contacts Available", null);
+        if (optionalContacts.isPresent()) {
+            List<Contacts> contactsList = new ArrayList<>();
+            contactsList.add(optionalContacts.get());
+            jsonContacts = new JsonContacts(SUCCESS_MESSAGE, contactsList);
         } else {
-            jsonContacts = new JsonContacts("Success getting contacts", contactsList);
+            jsonContacts = new JsonContacts(FAIL_MESSAGE, null);
         }
         return jsonContacts;
     }
 
     public JsonContacts findContactsByLocation(Optional<Locations> optionalLocation) {
         List<Contacts> contactsList = contactsRepo.findAllByLocation(optionalLocation.get());
-        JsonContacts jsonContacts;
+        String message = (contactsList.isEmpty())? FAIL_MESSAGE : SUCCESS_MESSAGE;
 
-        if (contactsList.isEmpty()) {
-            jsonContacts = new JsonContacts("No contacts Available", null);
-        } else {
-            jsonContacts = new JsonContacts("Success getting contacts", contactsList);
-        }
-        return jsonContacts;
+        return new JsonContacts(message, contactsList);
     }
 
     public ResponseMessage save(Contacts contacts) {
@@ -111,7 +118,9 @@ public class ContactsService {
     }
 
     public ResponseMessage deleteContact(Long restaurantId) {
-        List<Locations> locationsList = locationsService.findLocationByRestaurantId(restaurantId);
+        JsonLocations jsonLocations = locationsService.findLocationByRestaurantId(restaurantId);
+        List<Locations> locationsList = jsonLocations.getLocationsList();
+
         if (!locationsList.isEmpty()) {
             locationsList.forEach(contactsRepo::deleteContactByLocation);
             responseMessage.setMessage("Successfully deleted");
@@ -123,17 +132,4 @@ public class ContactsService {
         return responseMessage;
     }
 
-    public JsonContacts findById(Long contactId) {
-        Optional<Contacts> optionalContacts = contactsRepo.findById(contactId);
-        JsonContacts jsonContacts;
-
-        if (optionalContacts.isPresent()) {
-            List<Contacts> contactsList = new ArrayList<>();
-            contactsList.add(optionalContacts.get());
-            jsonContacts = new JsonContacts("Success getting contact", contactsList);
-        } else {
-            jsonContacts = new JsonContacts("Couldn't get contact", null);
-        }
-        return jsonContacts;
-    }
 }

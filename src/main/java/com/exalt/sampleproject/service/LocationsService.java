@@ -1,5 +1,6 @@
 package com.exalt.sampleproject.service;
 
+import com.exalt.sampleproject.dto.JsonLocations;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.Locations;
 import com.exalt.sampleproject.model.Restaurants;
@@ -13,21 +14,29 @@ import java.util.Optional;
 public class LocationsService {
     private final LocationsRepo locationsRepo;
     private final ResponseMessage responseMessage = new ResponseMessage();
+    private static final String SUCCESS_MESSAGE = "Success getting locations";
+    private static final String FAIL_MESSAGE = "Success getting locations";
 
     public LocationsService(LocationsRepo locationsRepo) {
         this.locationsRepo = locationsRepo;
     }
 
-    public List<Locations> findLocationByRestaurantId(Long restaurantId) {
-        return locationsRepo.findAllByRestaurantId(restaurantId);
+    public JsonLocations findLocationByRestaurantId(Long restaurantId) {
+        List<Locations> locationsList = locationsRepo.findAllByRestaurantId(restaurantId);
+        String message = (locationsList.isEmpty())? FAIL_MESSAGE : SUCCESS_MESSAGE;
+
+        return new JsonLocations(message, locationsList);
     }
 
     public Optional<Locations> findById(Long locationId) {
         return locationsRepo.findById(locationId);
     }
 
-    public List<Locations> findAll() {
-        return locationsRepo.findAll();
+    public JsonLocations findAll() {
+        List<Locations> locationsList = locationsRepo.findAll();
+        String message = (locationsList.isEmpty())? FAIL_MESSAGE : SUCCESS_MESSAGE  ;
+
+        return new JsonLocations(message, locationsList);
     }
 
     public ResponseMessage save(Locations location) {
@@ -51,7 +60,7 @@ public class LocationsService {
                     return save(location);});
             });
         } else {
-            responseMessage.setMessage("RestaurantId " + optionalRestaurant.get().getId() + ", not found.");
+            responseMessage.setMessage("RestaurantId was not found.");
             responseMessage.setStatus(-1);
         }
 
@@ -69,7 +78,7 @@ public class LocationsService {
             responseMessage.setMessage("Successfully updated");
             responseMessage.setStatus(1);
         } else {
-            responseMessage.setMessage("RestaurantId " + optionalRestaurant.get().getId() + ", not found.");
+            responseMessage.setMessage("RestaurantId was not found.");
             responseMessage.setStatus(-1);
         }
 
@@ -78,12 +87,14 @@ public class LocationsService {
 
     public ResponseMessage deleteLocationByRestaurant(Optional<Restaurants> optionalRestaurant) {
         if (optionalRestaurant.isPresent()) {
-            List<Locations> locationsList = findLocationByRestaurantId(optionalRestaurant.get().getId());
+            JsonLocations jsonLocations = findLocationByRestaurantId(optionalRestaurant.get().getId());
+            List<Locations> locationsList = jsonLocations.getLocationsList();
+
             locationsList.forEach(locationsRepo::delete);
             responseMessage.setMessage("Successfully deleted");
             responseMessage.setStatus(1);
         } else {
-            responseMessage.setMessage("RestaurantId " + optionalRestaurant.get().getId() + ", not found.");
+            responseMessage.setMessage("RestaurantId was not found.");
             responseMessage.setStatus(-1);
         }
         return responseMessage;

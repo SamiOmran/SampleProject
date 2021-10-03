@@ -1,13 +1,10 @@
 package com.exalt.sampleproject.controller;
 
+import com.exalt.sampleproject.dto.JsonOrders;
 import com.exalt.sampleproject.dto.ResponseMessage;
-import com.exalt.sampleproject.exception.ResourceNotFoundException;
 import com.exalt.sampleproject.model.Orders;
 import com.exalt.sampleproject.service.OrdersService;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class OrdersController {
@@ -18,19 +15,13 @@ public class OrdersController {
     }
 
     @GetMapping(path = "/restaurants/orders")
-    public List<Orders> getAllOrders() {
+    public JsonOrders getAllOrders() {
         return ordersService.findAll();
     }
 
     @GetMapping(path = "/restaurants/orders/{orderId}")
-    public Orders getOrder(@PathVariable Long orderId) {
-        Optional<Orders> optionalOrders = ordersService.findById(orderId);
-
-        if (optionalOrders.isPresent()) {
-            return optionalOrders.get();
-        } else {
-            throw new ResourceNotFoundException("Order you asked not found");
-        }
+    public JsonOrders getOrder(@PathVariable Long orderId) {
+        return ordersService.findById(orderId);
     }
 
     @PostMapping(path = "/restaurants/orders/{itemId}")

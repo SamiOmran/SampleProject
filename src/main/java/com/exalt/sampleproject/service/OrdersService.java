@@ -1,11 +1,14 @@
 package com.exalt.sampleproject.service;
 
+import com.exalt.sampleproject.dto.JsonItems;
+import com.exalt.sampleproject.dto.JsonOrders;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.Items;
 import com.exalt.sampleproject.model.Orders;
 import com.exalt.sampleproject.repository.OrdersRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,18 +17,31 @@ public class OrdersService {
     private final OrdersRepo ordersRepo;
     private final ItemsService itemsService;
     private final ResponseMessage responseMessage = new ResponseMessage();
+    private final static String SUCCESS_MESSAGE = "Success getting orders";
+    private final static String FAIL_MESSAGE = "No orders Available";
 
     public OrdersService(OrdersRepo ordersRepo, ItemsService itemsService) {
         this.ordersRepo = ordersRepo;
         this.itemsService = itemsService;
     }
 
-    public List<Orders> findAll() {
-        return ordersRepo.findAll();
+    public JsonOrders findAll() {
+        List<Orders> ordersList = ordersRepo.findAll();
+        String message = (ordersList.isEmpty())? FAIL_MESSAGE : SUCCESS_MESSAGE;
+        return new JsonOrders(message, ordersList);
     }
 
-    public Optional<Orders> findById(Long orderId) {
-        return ordersRepo.findById(orderId);
+    public JsonOrders findById(Long orderId) {
+        Optional<Orders> optionalOrders = ordersRepo.findById(orderId);
+        JsonOrders jsonOrders;
+        if (optionalOrders.isPresent()) {
+            List<Orders> ordersList = new ArrayList<>();
+            ordersList.add(optionalOrders.get());
+            jsonOrders = new JsonOrders(SUCCESS_MESSAGE, ordersList);
+        } else {
+            jsonOrders = new JsonOrders(SUCCESS_MESSAGE, null);
+        }
+        return jsonOrders;
     }
 
     public ResponseMessage save(Orders order) {
@@ -47,7 +63,8 @@ public class OrdersService {
      * @return response message
      */
     public ResponseMessage createOrder(Orders newOrder, Long itemId) {
-        Optional<Items> optionalItems = itemsService.findById(itemId);
+        JsonItems jsonItems = itemsService.findById(itemId);
+        Optional<Items> optionalItems = Optional.of(jsonItems.getItemsList().get(0));
 
         if (optionalItems.isPresent()) {
             Items item = optionalItems.get();
@@ -64,7 +81,8 @@ public class OrdersService {
     }
 
     public ResponseMessage updateOrder(Orders updatedOrder, Long orderId) {
-        Optional<Orders> optionalOrder = findById(orderId);
+        JsonOrders jsonOrders = findById(orderId);
+        Optional<Orders> optionalOrder = Optional.of(jsonOrders.getOrdersList().get(0));
 
         if (optionalOrder.isPresent()) {
             optionalOrder.map(order -> {
@@ -87,7 +105,8 @@ public class OrdersService {
     }
 
     public ResponseMessage deleteOrder(Long orderId) {
-        Optional<Orders> optionalOrder = findById(orderId);
+        JsonOrders jsonOrders = findById(orderId);
+        Optional<Orders> optionalOrder = Optional.of(jsonOrders.getOrdersList().get(0));
 
         if (optionalOrder.isPresent()) {
             ordersRepo.delete(optionalOrder.get());

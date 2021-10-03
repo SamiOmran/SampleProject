@@ -1,6 +1,8 @@
 package com.exalt.sampleproject.service;
 
+import com.exalt.sampleproject.dto.JsonAllData;
 import com.exalt.sampleproject.dto.JsonContacts;
+import com.exalt.sampleproject.dto.JsonLocations;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.AllData;
 import com.exalt.sampleproject.model.Contacts;
@@ -11,12 +13,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.junit.AfterClass;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.util.ArrayList;
@@ -105,7 +104,8 @@ public class RestaurantsService {
                 AllData allData = new AllData();
                 allData.setName(optionalRestaurant.get().getName());
 
-                List<Locations> locationsList = locationsService.findLocationByRestaurantId(id);
+                JsonLocations jsonLocations = locationsService.findLocationByRestaurantId(id);
+                List<Locations> locationsList = jsonLocations.getLocationsList();
                 allData.setLocations(locationsList);
 
                 List<Contacts> contactsList = new ArrayList<>();
@@ -124,20 +124,10 @@ public class RestaurantsService {
 
     }
 
-    public Object getAllRestaurants() {
+    public JsonAllData getAllRestaurants() {
         List<Restaurants> restaurantsList = findAll();
-        List<Object> allDataList = new ArrayList<>();
-
-        if (restaurantsList.isEmpty()) {
-            return "No Restaurants found";
-        } else {
-            restaurantsList.forEach(restaurant -> {
-                String idAsString = restaurant.getId().toString();
-                allDataList.add(getRestaurantsInfo(idAsString));
-            });
-            return allDataList;
-        }
-
+        JsonAllData jsonAllData ;
+return new JsonAllData();
     }
 
     public ResponseMessage createRestaurantUsingFile(MultipartFile fileData) {
@@ -195,15 +185,4 @@ public class RestaurantsService {
         contactsService.createContact2(contactsList, restaurant);
     }
 
-    private void writeToFile() throws IOException {
-        String path = "G:\\Training in companies\\Exalt\\SampleProject\\src\\main\\resources\\files";
-        List<Restaurants> restaurantsList = findAll();
-
-        Restaurants rr = findById(Long.parseLong("1")).get();
-
-        FileOutputStream fileOut = new FileOutputStream(path);
-        ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
-
-        objectOut.writeObject(rr);
-    }
 }

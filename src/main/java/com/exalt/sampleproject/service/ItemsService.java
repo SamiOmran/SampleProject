@@ -1,5 +1,6 @@
 package com.exalt.sampleproject.service;
 
+import com.exalt.sampleproject.dto.JsonItems;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.Items;
 import com.exalt.sampleproject.model.Restaurants;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -18,6 +20,8 @@ public class ItemsService {
     private final ItemsRepo itemsRepo;
     private final RestaurantsService restaurantsService;
     private final ResponseMessage responseMessage = new ResponseMessage();
+    private static final String SUCCESS_MESSAGE = "Success getting items";
+    private static final String FAIL_MESSAGE = "Success getting items";
 
     public ItemsService(ItemsRepo itemsRepo, RestaurantsService restaurantsService) {
         this.itemsRepo = itemsRepo;
@@ -32,12 +36,24 @@ public class ItemsService {
         return responseMessage;
     }
 
-    public List<Items> findAll() {
-        return itemsRepo.findAll();
+    public JsonItems findAll() {
+        List<Items> itemsList = itemsRepo.findAll();
+        String message = (itemsList.isEmpty())? FAIL_MESSAGE : SUCCESS_MESSAGE  ;
+
+        return new JsonItems(message, itemsList);
     }
 
-    public Optional<Items> findById(Long itemId) {
-        return itemsRepo.findById(itemId);
+    public JsonItems findById(Long itemId) {
+        Optional<Items> optionalItems = itemsRepo.findById(itemId);
+        JsonItems jsonItems;
+        if (optionalItems.isPresent()) {
+            List<Items> itemsList = new ArrayList<>();
+            itemsList.add(optionalItems.get());
+            jsonItems = new JsonItems(SUCCESS_MESSAGE, itemsList);
+        } else {
+            jsonItems = new JsonItems(FAIL_MESSAGE, null);
+        }
+        return jsonItems;
     }
 
     public List<Items> findItemsByRestaurantId(Long restaurantId) {
@@ -81,9 +97,10 @@ public class ItemsService {
 
     public ResponseMessage updateItem(Long restaurantId, Long itemId, Items newItem) {
         Optional<Restaurants> optionalRestaurant = restaurantsService.findById(restaurantId);
-        Optional<Items> optionalItems = findById(itemId);
+        JsonItems jsonItems = findById(itemId);
+        Optional<Items> optionalItems = Optional.of(jsonItems.getItemsList().get(0));
 
-        if (optionalRestaurant.isPresent() && optionalItems.isPresent()) {
+        if (optionalRestaurant.isPresent()) {
             optionalItems.map(item-> {
                 item.setDescription(newItem.getDescription());
                 item.setPrice(newItem.getPrice());
@@ -98,9 +115,10 @@ public class ItemsService {
 
     public ResponseMessage deleteItem(Long restaurantId, Long itemId) {
         Optional<Restaurants> optionalRestaurant = restaurantsService.findById(restaurantId);
-        Optional<Items> optionalItems = findById(itemId);
+        JsonItems jsonItems = findById(itemId);
+        Optional<Items> optionalItems = Optional.of(jsonItems.getItemsList().get(0));
 
-        if (optionalRestaurant.isPresent() && optionalItems.isPresent()) {
+        if (optionalRestaurant.isPresent()) {
             itemsRepo.delete(optionalItems.get());
             responseMessage.setMessage("Success deleting itemId + " + optionalItems.get().getId());
             responseMessage.setStatus(1);

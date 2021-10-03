@@ -1,11 +1,10 @@
 package com.exalt.sampleproject.controller;
 
+import com.exalt.sampleproject.dto.JsonOffers;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.Offers;
 import com.exalt.sampleproject.service.OffersSerivce;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class OffersController {
@@ -16,12 +15,12 @@ public class OffersController {
     }
 
     @GetMapping(path = "/restaurants/{restaurantId}/offers")
-    public List<Offers> getRestaurantOffers(@PathVariable Long restaurantId) {
+    public JsonOffers getRestaurantOffers(@PathVariable Long restaurantId) {
         return offersSerivce.getRestaurantOffers(restaurantId);
     }
 
     @GetMapping(path = "/restaurants/offers")
-    public List<Offers> getOffers() {
+    public JsonOffers getOffers() {
         return offersSerivce.findAll();
     }
 

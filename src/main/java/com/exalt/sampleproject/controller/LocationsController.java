@@ -1,5 +1,6 @@
 package com.exalt.sampleproject.controller;
 
+import com.exalt.sampleproject.dto.JsonLocations;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.exception.ResourceNotFoundException;
 import com.exalt.sampleproject.model.Locations;
@@ -26,7 +27,7 @@ public class LocationsController {
     }
 
     @GetMapping(path = "/restaurants/locations")
-    public List<Locations> getLocations() {
+    public JsonLocations getLocations() {
         return locationsService.findAll();
     }
 
@@ -36,18 +37,13 @@ public class LocationsController {
      * @return location details
      */
     @GetMapping(path = "/restaurants/{restaurantId}/locations", produces = {"application/json"})
-    public List<Locations> listLocationByRestaurantId(@PathVariable Long restaurantId) {
-        List<Locations> locations = locationsService.findLocationByRestaurantId(restaurantId);
+    public JsonLocations listLocationByRestaurantId(@PathVariable Long restaurantId) {
+        JsonLocations jsonLocations = locationsService.findLocationByRestaurantId(restaurantId);
 
-        if (!locations.isEmpty()) {
-            return locations;
-        } else {
-            throw new ResourceNotFoundException("Restaurant id " + restaurantId + ", not found");
-        }
+        return jsonLocations;
     }
 
     /**
-     *
      * @param locations new location object to be created
      * @param restaurantId id for the restaurant
      * @return message status

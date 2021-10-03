@@ -1,5 +1,6 @@
 package com.exalt.sampleproject.service;
 
+import com.exalt.sampleproject.dto.JsonOffers;
 import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.exception.ResourceNotFoundException;
 import com.exalt.sampleproject.model.Offers;
@@ -17,6 +18,8 @@ public class OffersSerivce {
     private final RestaurantsService restaurantsService;
     private final OffersRepo offersRepo;
     private final ResponseMessage responseMessage = new ResponseMessage();
+    private final static String SUCCESS_MESSAGE = "Success getting the offers";
+    private final static String FAIL_MESSAGE = "No offers available";
 
     public OffersSerivce(RestaurantsService restaurantsService, OffersRepo offersRepo) {
         this.restaurantsService = restaurantsService;
@@ -32,17 +35,28 @@ public class OffersSerivce {
         return responseMessage;
     }
 
-    public List<Offers> getRestaurantOffers(Long restaurantId) {
+    public JsonOffers getRestaurantOffers(Long restaurantId) {
         List<Offers> offersList = offersRepo.findAllByRestaurantsId(restaurantId);
-        if (!offersList.isEmpty()) {
-            return offersList;
+        JsonOffers jsonOffers;
+
+        if (offersList.isEmpty()) {
+            jsonOffers = new JsonOffers(FAIL_MESSAGE, offersList);
         } else {
-            throw new ResourceNotFoundException("Restaurant not found");
+            jsonOffers = new JsonOffers(SUCCESS_MESSAGE, offersList);
         }
+        return jsonOffers;
     }
 
-    public List<Offers> findAll() {
-        return offersRepo.findAll();
+    public JsonOffers findAll() {
+        List<Offers> offersList = offersRepo.findAll();
+        JsonOffers jsonOffers;
+
+        if (offersList.isEmpty()) {
+            jsonOffers = new JsonOffers(FAIL_MESSAGE, offersList);
+        } else {
+            jsonOffers = new JsonOffers(SUCCESS_MESSAGE, offersList);
+        }
+        return jsonOffers;
     }
 
     public ResponseMessage createOffer(Offers newOffer, Long restaurantId) {
