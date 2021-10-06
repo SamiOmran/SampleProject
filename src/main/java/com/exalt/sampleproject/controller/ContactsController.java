@@ -54,6 +54,7 @@ public class ContactsController {
         }
     }
 
+
     /**
      * @param contacts new contact object to be created
      * @param locationId id for the restaurant

@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class RestaurantsController {
     private final RestaurantsService restaurantsService;
-    //Logger logger = LoggerFactory.getLogger(RestaurantsController.class);
+    Logger logger = LoggerFactory.getLogger(RestaurantsController.class);
 
     public RestaurantsController(RestaurantsService restaurantsService) {
         this.restaurantsService = restaurantsService;
@@ -34,6 +34,16 @@ public class RestaurantsController {
     @GetMapping(path = "/restaurants/{stringId}")
     public Object getRestaurantData(@PathVariable String stringId) {
         return restaurantsService.getRestaurantsInfo(stringId);
+    }
+
+    /**
+     * create Post method to create resources from uploaded json file
+     * @param fileData json file contains data
+     * @return response message holds status
+     */
+    @PostMapping(path = "/restaurants/file")
+    public ResponseMessage createRestaurantUsingFile(MultipartFile fileData) {
+        return restaurantsService.createRestaurantUsingFile(fileData);
     }
 
     /**
@@ -64,15 +74,5 @@ public class RestaurantsController {
         return restaurantsService.deleteRestaurant(id);
     }
 
-
-    /**
-     * create Post method to create resources from uploaded json file
-     * @param fileData json file contains data
-     * @return response message holds status
-     */
-    @PostMapping(path = "/restaurants/file")
-    public ResponseMessage createRestaurantUsingFile(MultipartFile fileData) {
-        return restaurantsService.createRestaurantUsingFile(fileData);
-    }
 
 }

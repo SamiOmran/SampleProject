@@ -34,6 +34,7 @@ public class OrdersService {
     public JsonOrders findById(Long orderId) {
         Optional<Orders> optionalOrders = ordersRepo.findById(orderId);
         JsonOrders jsonOrders;
+
         if (optionalOrders.isPresent()) {
             List<Orders> ordersList = new ArrayList<>();
             ordersList.add(optionalOrders.get());
@@ -41,6 +42,7 @@ public class OrdersService {
         } else {
             jsonOrders = new JsonOrders(SUCCESS_MESSAGE, null);
         }
+
         return jsonOrders;
     }
 

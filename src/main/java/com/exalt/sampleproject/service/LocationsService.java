@@ -14,8 +14,8 @@ import java.util.Optional;
 public class LocationsService {
     private final LocationsRepo locationsRepo;
     private final ResponseMessage responseMessage = new ResponseMessage();
-    private static final String SUCCESS_MESSAGE = "Success getting locations";
-    private static final String FAIL_MESSAGE = "Success getting locations";
+    private static final String SUCCESS_MESSAGE = "Success getting locations.";
+    private static final String FAIL_MESSAGE = "No locations found.";
 
     public LocationsService(LocationsRepo locationsRepo) {
         this.locationsRepo = locationsRepo;

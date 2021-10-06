@@ -2,11 +2,9 @@ package com.exalt.sampleproject.service;
 
 import com.exalt.sampleproject.dto.JsonOffers;
 import com.exalt.sampleproject.dto.ResponseMessage;
-import com.exalt.sampleproject.exception.ResourceNotFoundException;
 import com.exalt.sampleproject.model.Offers;
 import com.exalt.sampleproject.model.Restaurants;
 import com.exalt.sampleproject.repository.OffersRepo;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -75,7 +73,6 @@ public class OffersSerivce {
         }
         return responseMessage;
     }
-
 
     public ResponseMessage updateOffer(Offers updatedOffer, Long restaurantId, Long offerId) {
         Optional<Restaurants> optionalRestaurant = restaurantsService.findById(restaurantId);

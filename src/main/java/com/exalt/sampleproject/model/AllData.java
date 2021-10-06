@@ -7,7 +7,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class AllData {
     private String name;
     private List<Locations> locations;
