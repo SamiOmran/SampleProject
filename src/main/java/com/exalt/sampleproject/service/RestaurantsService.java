@@ -29,6 +29,8 @@ public class RestaurantsService {
     private final LocationsService locationsService;
     private final ContactsService contactsService;
     private ResponseMessage responseMessage = new ResponseMessage();
+    private final static String SUCCESS_MESSAGE = "Success getting the restaurants";
+    private final static String FAIL_MESSAGE = "No restaurants available";
 
     public RestaurantsService(RestaurantsRepo restaurantsRepo, LocationsService locationsService, ContactsService contactsService) {
         this.restaurantsRepo = restaurantsRepo;
@@ -95,39 +97,56 @@ public class RestaurantsService {
         return responseMessage;
     }
 
-    public Object getRestaurantsInfo(String stringId) {
+    public JsonAllData getRestaurantsInfo(String stringId) {
         try {
             Long id = Long.parseLong(stringId);
             Optional<Restaurants> optionalRestaurant = findById(id);
+            List<AllData> allDataList = new ArrayList<>();
+            JsonAllData jsonAllData;
 
             if (optionalRestaurant.isPresent()) {
-                AllData allData = new AllData();
-                allData.setName(optionalRestaurant.get().getName());
-
+                AllData allData;
                 JsonLocations jsonLocations = locationsService.findLocationByRestaurantId(id);
                 List<Locations> locationsList = jsonLocations.getLocationsList();
-                allData.setLocations(locationsList);
-
                 List<Contacts> contactsList = new ArrayList<>();
+
                 locationsList.forEach(location -> {
                     Optional<Locations> optionalLocation = Optional.of(location);
                     JsonContacts jsonContacts = contactsService.findContactsByLocation(optionalLocation);
                     contactsList.addAll(jsonContacts.getContactsList());
                 });
-                allData.setContacts(contactsList);
-                return allData;
+
+                allDataList.add(new AllData(optionalRestaurant.get().getName(), locationsList, contactsList));
+                jsonAllData = new JsonAllData(SUCCESS_MESSAGE, allDataList);
+            } else {
+                jsonAllData = new JsonAllData(FAIL_MESSAGE, allDataList);
             }
-            return null;
-        } catch (NumberFormatException exception) {
-            return "Wrong url";
+
+            return jsonAllData;
+        } catch (Exception exception) {
+            return new JsonAllData(FAIL_MESSAGE, null);
         }
 
     }
 
     public JsonAllData getAllRestaurants() {
         List<Restaurants> restaurantsList = findAll();
-        JsonAllData jsonAllData ;
-return new JsonAllData();
+        List<AllData> allDataList = new ArrayList<>();
+        JsonAllData jsonAllData;
+
+        if (restaurantsList.isEmpty()) {
+            jsonAllData = new JsonAllData(FAIL_MESSAGE,null);
+        } else {
+            restaurantsList.forEach(restaurant -> {
+                JsonLocations jsonLocations = locationsService.findLocationByRestaurantId(restaurant.getId());
+                JsonContacts jsonContacts = contactsService.findContactsByLocation(Optional.of(jsonLocations.getLocationsList().get(0)));
+                AllData allData = new AllData(restaurant.getName(), jsonLocations.getLocationsList(), jsonContacts.getContactsList());
+
+                allDataList.add(allData);
+            });
+            jsonAllData = new JsonAllData(SUCCESS_MESSAGE, allDataList);
+        }
+        return jsonAllData;
     }
 
     public ResponseMessage createRestaurantUsingFile(MultipartFile fileData) {

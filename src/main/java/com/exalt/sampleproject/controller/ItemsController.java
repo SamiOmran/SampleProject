@@ -2,7 +2,6 @@ package com.exalt.sampleproject.controller;
 
 import com.exalt.sampleproject.dto.JsonItems;
 import com.exalt.sampleproject.dto.ResponseMessage;
-import com.exalt.sampleproject.exception.ResourceNotFoundException;
 import com.exalt.sampleproject.model.Items;
 import com.exalt.sampleproject.service.ItemsService;
 import org.springframework.web.bind.annotation.*;
@@ -10,8 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class ItemsController {
@@ -32,7 +29,7 @@ public class ItemsController {
     }
 
     @GetMapping(path = "/restaurants/{restaurantId}/items", produces = {"application/json"})
-    public List<Items> getRestaurantItems(@PathVariable Long restaurantId) {
+    public JsonItems getRestaurantItems(@PathVariable Long restaurantId) {
         return itemsService.findItemsByRestaurantId(restaurantId);
     }
 

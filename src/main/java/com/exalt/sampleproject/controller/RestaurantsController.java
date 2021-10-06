@@ -32,7 +32,7 @@ public class RestaurantsController {
      * @return restaurant info (name, location, contacts)
      */
     @GetMapping(path = "/restaurants/{stringId}")
-    public Object getRestaurantData(@PathVariable String stringId) {
+    public JsonAllData getRestaurantData(@PathVariable String stringId) {
         return restaurantsService.getRestaurantsInfo(stringId);
     }
 

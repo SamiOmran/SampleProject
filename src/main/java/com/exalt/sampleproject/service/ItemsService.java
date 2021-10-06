@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -20,8 +19,8 @@ public class ItemsService {
     private final ItemsRepo itemsRepo;
     private final RestaurantsService restaurantsService;
     private final ResponseMessage responseMessage = new ResponseMessage();
-    private static final String SUCCESS_MESSAGE = "Success getting items";
-    private static final String FAIL_MESSAGE = "Success getting items";
+    private static final String SUCCESS_MESSAGE = "Success getting items.";
+    private static final String FAIL_MESSAGE = "Failed getting items.";
 
     public ItemsService(ItemsRepo itemsRepo, RestaurantsService restaurantsService) {
         this.itemsRepo = itemsRepo;
@@ -38,9 +37,9 @@ public class ItemsService {
 
     public JsonItems findAll() {
         List<Items> itemsList = itemsRepo.findAll();
-        String message = (itemsList.isEmpty())? FAIL_MESSAGE : SUCCESS_MESSAGE  ;
+        boolean isEmpty = itemsList.isEmpty();
 
-        return new JsonItems(message, itemsList);
+        return (isEmpty)? new JsonItems(FAIL_MESSAGE, itemsList) : new JsonItems(SUCCESS_MESSAGE, itemsList);
     }
 
     public JsonItems findById(Long itemId) {
@@ -56,14 +55,11 @@ public class ItemsService {
         return jsonItems;
     }
 
-    public List<Items> findItemsByRestaurantId(Long restaurantId) {
+    public JsonItems findItemsByRestaurantId(Long restaurantId) {
         List<Items> itemsList = itemsRepo.findAllByRestaurantsId(restaurantId);
+        boolean isEmpty = itemsList.isEmpty();
 
-        if (!itemsList.isEmpty()) {
-            itemsList.forEach(System.out::println);
-            return itemsList;
-        }
-        throw new NoSuchElementException();
+        return (isEmpty)? new JsonItems(FAIL_MESSAGE, itemsList) : new JsonItems(SUCCESS_MESSAGE, itemsList);
     }
 
     public ResponseMessage createItem(String newItem, Long restaurantId, MultipartFile multipartFile) throws IOException {
