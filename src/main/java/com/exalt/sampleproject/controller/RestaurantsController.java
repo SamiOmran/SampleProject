@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class RestaurantsController {
     private final RestaurantsService restaurantsService;
-    Logger logger = LoggerFactory.getLogger(RestaurantsController.class);
+    //Logger logger = LoggerFactory.getLogger(RestaurantsController.class);
 
     public RestaurantsController(RestaurantsService restaurantsService) {
         this.restaurantsService = restaurantsService;
@@ -73,6 +73,5 @@ public class RestaurantsController {
     public ResponseMessage deleteRestaurant(@PathVariable Long id) {
         return restaurantsService.deleteRestaurant(id);
     }
-
 
 }

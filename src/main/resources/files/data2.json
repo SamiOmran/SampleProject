@@ -1,5 +1,45 @@
 [
   {
+    "name" :"Orgada",
+    "contacts" : [
+      {
+        "type" : "phone",
+        "value" : "0597430457",
+        "location" :
+        {
+          "city":"Jennin",
+          "street":"Main street",
+          "section":"A"
+        }
+      },
+      {
+        "type" : "telephone",
+        "value" : "043653252",
+        "location" :
+        {
+          "city":"Jerico",
+          "street":"Hashem st",
+          "section":"55"
+        }
+      }
+    ]
+  },
+  {
+    "name": "White lounge",
+    "contacts": [
+      {
+        "type" : "phone",
+        "value" : "056321458",
+        "location" : {
+          "city" : "Nablus",
+          "street" : "Tounis",
+          "section" : "capital"
+        }
+      }
+    ]
+  },
+
+  {
     "name" :"Ward",
     "contacts" : [
       {
