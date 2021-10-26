@@ -1,4 +1,4 @@
-package com.exalt.sampleproject.security;
+package com.exalt.sampleproject.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,15 +8,20 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import javax.sql.DataSource;
+import java.util.Locale;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class Security extends WebSecurityConfigurerAdapter  {
     @Autowired DataSource dataSource;
     private final String PASSWORD = "pass";
 
@@ -26,7 +31,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .authorizeRequests()
                     .antMatchers("/restaurants/**").hasAnyRole("ADMIN", "USER")
-                    .antMatchers("/h2-console/**").permitAll()
+                    .antMatchers("/h2-console/**").hasRole("ADMIN")//permitAll()
                 .and()
                     .csrf()
                     .disable()
@@ -55,11 +60,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .roles("ADMIN"));
     }
 
-
     /**
      * use this method when using mysql database
      */
-////Authentication
+//Authentication
 //    @Autowired
 //    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 //        authenticationManagerBuilder
