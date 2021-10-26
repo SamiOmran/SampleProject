@@ -5,15 +5,21 @@ import com.exalt.sampleproject.dto.ResponseMessage;
 import com.exalt.sampleproject.model.AllData;
 import com.exalt.sampleproject.model.Restaurants;
 import com.exalt.sampleproject.service.RestaurantsService;
+import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Locale;
 
 @RestController
 public class RestaurantsController {
     private final RestaurantsService restaurantsService;
     //Logger logger = LoggerFactory.getLogger(RestaurantsController.class);
+    @Autowired MessageSource messageSource;
 
     public RestaurantsController(RestaurantsService restaurantsService) {
         this.restaurantsService = restaurantsService;
@@ -23,8 +29,8 @@ public class RestaurantsController {
      * @return list of Restaurants in DB
      */
     @GetMapping(path = "/restaurants", produces = {"application/json"})
-    public JsonAllData listRestaurants() {
-        return restaurantsService.getAllRestaurants();
+    public JsonAllData listRestaurants(@RequestHeader(name = "Accept-Language", required = false) Locale locale) {
+        return restaurantsService.getAllRestaurants(locale);
     }
 
     /**
@@ -42,7 +48,7 @@ public class RestaurantsController {
      * @return response message holds status
      */
     @PostMapping(path = "/restaurants/file")
-    public ResponseMessage createRestaurantUsingFile(MultipartFile fileData) {
+    public ResponseMessage createRestaurantUsingFile(MultipartFile fileData, @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
         return restaurantsService.createRestaurantUsingFile(fileData);
     }
 
@@ -74,4 +80,8 @@ public class RestaurantsController {
         return restaurantsService.deleteRestaurant(id);
     }
 
+    @GetMapping(path="/hello-world-internationalized")
+    public String helloWorldInternationalized(@RequestHeader(name="Accept-Language", required=false) Locale locale) {
+        return messageSource.getMessage("welcome.message", null, locale);
+    }
 }

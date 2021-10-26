@@ -13,6 +13,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +23,7 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 
@@ -31,6 +35,9 @@ public class RestaurantsService {
     private ResponseMessage responseMessage = new ResponseMessage();
     private final static String SUCCESS_MESSAGE = "Success getting the restaurants";
     private final static String FAIL_MESSAGE = "No restaurants available";
+
+    @Autowired
+    MessageSource messageSource;
 
     public RestaurantsService(RestaurantsRepo restaurantsRepo, LocationsService locationsService, ContactsService contactsService) {
         this.restaurantsRepo = restaurantsRepo;
@@ -129,13 +136,13 @@ public class RestaurantsService {
 
     }
 
-    public JsonAllData getAllRestaurants() {
+    public JsonAllData getAllRestaurants(Locale locale) {
         List<Restaurants> restaurantsList = findAll();
         List<AllData> allDataList = new ArrayList<>();
         JsonAllData jsonAllData;
 
         if (restaurantsList.isEmpty()) {
-            jsonAllData = new JsonAllData(FAIL_MESSAGE,null);
+            jsonAllData = new JsonAllData(messageSource.getMessage("fail.getting.restaurant.message", null, locale),null);
         } else {
             restaurantsList.forEach(restaurant -> {
                 JsonLocations jsonLocations = locationsService.findLocationByRestaurantId(restaurant.getId());
@@ -144,7 +151,7 @@ public class RestaurantsService {
 
                 allDataList.add(allData);
             });
-            jsonAllData = new JsonAllData(SUCCESS_MESSAGE, allDataList);
+            jsonAllData = new JsonAllData(messageSource.getMessage("success.getting.restaurant.message", null, locale), allDataList);
         }
         return jsonAllData;
     }
@@ -177,6 +184,9 @@ public class RestaurantsService {
         return responseMessage;
     }
 
+    /**
+     * @param newRestaurant JSON object to parse it to a new restuarant object
+     */
     private void parseRestaurantObject(JSONObject newRestaurant) {
         String restaurantName = (String) newRestaurant.get("name");
         Restaurants restaurant = new Restaurants();
